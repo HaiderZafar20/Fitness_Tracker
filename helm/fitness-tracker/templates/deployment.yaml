@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fitness-tracker.fullname" . }}
+  namespace: {{ .Release.Namespace | default "fitness" }}
+  labels:
+    app: {{ include "fitness-tracker.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "fitness-tracker.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fitness-tracker.name" . }}
+    spec:
+      containers:
+      - name: {{ include "fitness-tracker.name" . }}-container
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+        env:
+        - name: NODE_ENV
+          value: {{ .Values.config.NODE_ENV | quote }}
+        - name: PORT
+          value: {{ .Values.config.PORT | quote }}
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "fitness-tracker.fullname" . }}-secret
+              key: MONGODB_URI
