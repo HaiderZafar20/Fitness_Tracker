@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fitness-deployment
+  namespace: fitness
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fitness
+  template:
+    metadata:
+      labels:
+        app: fitness
+    spec:
+      containers:
+      - name: fitness-container
+        image: haiderzafar/fitness:v1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: fitness-config
+              key: NODE_ENV
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: fitness-config
+              key: PORT
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: fitness-secret
+              key: MONGODB_URI
+        
