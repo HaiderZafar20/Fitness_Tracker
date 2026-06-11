@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: fitness-tracker
+  namespace: argocd
+
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/HaiderZafar20/Fitness_Tracker.git
+    targetRevision: master
+    path: helm/fitness-tracker
+
+    helm:
+      valueFiles:
+        - values-dev.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: fitness
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
