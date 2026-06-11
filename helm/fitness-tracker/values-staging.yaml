@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: haiderzafar/fitness
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+
+mongodb:
+  enabled: true
+  image: mongo:7
+  serviceName: mongodb
+  port: 27017
+
+persistence:
+  enabled: true
+  storage: 1Gi
+
+config:
+  NODE_ENV: production
+  PORT: "5000"
+
+secret:
+  MONGODB_URI: "mongodb://mongodb:27017/fitness-tracker"
+
+gateway:
+  enabled: true
+  className: nginx
