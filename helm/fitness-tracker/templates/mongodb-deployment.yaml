@@ -1,0 +1,22 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.mongodb.serviceName }}
+  namespace: {{ .Release.Namespace | default "fitness" }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.mongodb.serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.mongodb.serviceName }}
+    spec:
+      containers:
+      - name: mongodb
+        image: {{ .Values.mongodb.image }}
+        ports:
+        - containerPort: {{ .Values.mongodb.port }}
+{{- end }}
